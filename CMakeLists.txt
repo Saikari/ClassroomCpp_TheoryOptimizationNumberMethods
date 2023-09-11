@@ -4,3 +4,4 @@ project(homework1)
 set(CMAKE_CXX_STANDARD 23)
 
 add_executable(homework1 homework1.cpp)
+add_executable(classwork1 classwork1.cpp)
