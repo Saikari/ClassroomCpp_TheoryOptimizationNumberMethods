@@ -1,76 +1,66 @@
 #include <iostream>
 #include <cmath>
+#include <memory>
 
-long double finddeterminant(const long double * a, const long double * b, const long double * c)
+std::unique_ptr<double> sum(const std::unique_ptr<double>& a, const std::unique_ptr<double>& b)
 {
-    return *b * *b - 4.0L * *a * *c;
+  return std::make_unique<double>(*a + *b);
 }
-long double fx(const long double * a, const long double * b, const long double * c, const long double * x)
+
+std::unique_ptr<double> mul(const std::unique_ptr<double>& a, const std::unique_ptr<double>& b)
 {
-    return *a * *x * *x + *b * *x + *c;
+  return std::make_unique<double>(*a * *b);
 }
-long double xadd(const long double * a, const long double * b, const long double * determinant)
+
+std::unique_ptr<double> sub(const std::unique_ptr<double>& a, const std::unique_ptr<double>& b)
 {
-    return (-*b + sqrtl(*determinant)) / (2.0L * *a);
+  return std::make_unique<double>(*a - *b);
 }
-long double xsub(const long double * a, const long double * b, const long double * determinant)
+
+double err_double()
 {
-    return (-*b - sqrtl(*determinant)) / (2.0L * *a);
+  double A = sqrt(2.0);
+  const double e_= 2.0;
+  double eps = 1.0;
+  for (; A + eps > A; eps /= e_ )
+  {
+  }
+  return eps;
 }
-long double sign(const long double * value)
+
+float err_float()
 {
-    return *value < 0.0L ? -1.0L : 1.0L;
+  float A = sqrtf(2.0F);
+  const float e_= 2.0F;
+  float eps = 1.0F;
+  for (; A + eps > A; eps /= e_ )
+  {
+  }
+  return eps;
 }
-long double finx1(const long double * a, const long double * b, const long double * determinant)
-{
-    return - (*b + sign(&*b) * sqrtl(*determinant)) / (2.0L * *a);
-}
-long double finx2(const long double * a, const long double * c, const long double * x1)
-{
-    return *c / (*a * *x1);
-}
-void calculate(const long double * a, const long double * b, const long double * c)
-{
-    long double determinant = finddeterminant(&*a, &*b, &*c);
-    long double * x = new long double[2];
-    std::cout << "Корни квадратного уравнения :" << std::endl;
-    if (*a != 0.0L)
-    {
-        x[0] = finx1(&*a, &*b, &determinant);
-        x[1] = finx2(&*a, &*c, &x[0]);
-        std::cout << "x[1]="<< std::fixed << x[0] << "\t" << "x[2]="<< x[1] << std::endl;
-        std::cout << "f(x[1])=" << fx(&*a, &*b, &*c, &x[0]) << "\t" << "f(x[2])="<< fx(&*a, &*b, &*c, &x[1]);
-    }
-    std::cout << std::endl;
-    delete[] x;
-}
+
 int main() {
-    std::cout.precision(11);
-    long double a, b, c;
-    std::cout << "Случай 1:" << std::endl;
-    a = 1.0L;
-    b = std::pow(-10.0L,5.0L);
-    c = 1.0L;
-    calculate(&a, &b, &c);
-   std::cout << "Случай 2:" << std::endl;
-    a = 6.0L;
-    b = 5.0L;
-    c = -4.0L;
-    calculate(&a, &b, &c);
-    std::cout << "Случай 3:" << std::endl;
-    a = 6.0L * pow(10.0L,30.0L);
-    b = 5.0L * pow(10.0L,30.0L);
-    c = -4.0L * pow(10.0L,30.0L);
-    calculate(&a, &b, &c);
-    std::cout << "Случай 4:" << std::endl;
-    a = pow(10.0L,-30.0L);
-    b = pow(-10.0L,30.0L);
-    c = pow(10.0L,30.0L);
-    calculate(&a, &b, &c);
-    std::cout << "Случай 5:" << std::endl;
-    a = 1.0000000L;
-    b = -4.0000000L;
-    c = 3.9999999L;
-    calculate(&a, &b, &c);
-    return 0;
+  std::unique_ptr<double> a(new double(0.0));
+  std::unique_ptr<double> b(new double(0.0));
+  std::unique_ptr<double> c(new double(0.0));
+  std::cout << "Введите а" << std::endl;
+  std::cin >> *a;
+  std::cout << "Введите b" << std::endl;
+  std::cin >> *b;
+  std::cout << "Введите c" << std::endl;
+  std::cin >> *c;
+  std::cout << "Привет мир!" << std::endl;
+  std::cout << "a = " << *a << std::endl 
+       << "a^2 = " << *a * *a << std::endl;
+  std::cout << "a + b + c = " << *a + *b + *c << std::endl;
+  std::cout << "a * b * c = " << *a * *b * *c << std::endl;  
+  std::cout << "a + b = " << *sum(a, b) << std::endl;
+  std::cout << "a - b = " << *sub(a, b) << std::endl;
+  std::cout << "a * b = " << *mul(a, b) << std::endl;
+  std::cout << "Вывод числе от 1 до 10 с шагом 1:" << std::endl;
+  for (int i = 1; i < 11; ++i)
+    std::cout << i << std::endl;
+  std::cout << "Программная погрешность double = " << err_double() << std::endl;
+  std::cout << "Программная погрешность float = " << err_float() << std::endl;
+  return 0;
 }
